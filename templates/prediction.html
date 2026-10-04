@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Approval Simulator | AI Credit Underwriter</title>
+    <meta name="description" content="Simulate loan approval decisions and evaluate financial risk ratings in real-time.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="nav-brand">
+                <div class="brand-icon"><i class="fa-solid fa-vault"></i></div>
+                <div>
+                    <div class="brand-title">FintechAI Underwriter</div>
+                    <div class="brand-subtitle">Risk Intelligence System</div>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="/predict" class="nav-link active"><i class="fa-solid fa-calculator"></i> Loan Simulator</a>
+                <a href="/dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> Analytics & Models</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container" style="padding-top: 30px; padding-bottom: 60px;">
+        <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Loan Eligibility & Credit Risk Simulator</h1>
+            <p style="color: var(--text-muted);">
+                Submit applicant credit and financial parameters below to trigger our trained machine learning model for instant risk-weighted adjudication.
+            </p>
+        </div>
+
+        <!-- 1-Click Preset Profile Selector -->
+        <div class="card" style="padding: 18px 24px; margin-bottom: 28px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Fast-Fill Demonstration Profiles:
+            </div>
+            <div class="presets-bar">
+                <button type="button" class="preset-chip" data-preset="prime">
+                    <i class="fa-solid fa-user-check" style="color: #10b981;"></i> Prime Corporate (High Approval)
+                </button>
+                <button type="button" class="preset-chip" data-preset="risky">
+                    <i class="fa-solid fa-user-xmark" style="color: #ef4444;"></i> Default Risk (High Rejection)
+                </button>
+                <button type="button" class="preset-chip" data-preset="entrepreneur">
+                    <i class="fa-solid fa-briefcase" style="color: #8b5cf6;"></i> Self-Employed Entrepreneur
+                </button>
+                <button type="button" class="preset-chip" data-preset="starter">
+                    <i class="fa-solid fa-house-chimney" style="color: #3b82f6;"></i> First-Time Starter Home
+                </button>
+            </div>
+        </div>
+
+        <div class="prediction-layout">
+            <!-- Application Form -->
+            <div class="card">
+                <form action="/predict" method="POST" id="loanForm">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--glass-border); padding-bottom: 14px; margin-bottom: 20px;">
+                        <h2 style="font-size: 1.35rem; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-id-card-clip" style="color: var(--primary);"></i> Applicant Information
+                        </h2>
+                        <span style="font-size: 0.8rem; color: var(--text-dim);">* All attributes required</span>
+                    </div>
+
+                    <div class="form-grid">
+                        <!-- Gender -->
+                        <div class="form-group">
+                            <label class="form-label" for="Gender">Gender</label>
+                            <select class="form-control" id="Gender" name="Gender" required>
+                                <option value="Male" {% if form_data.get('Gender') == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if form_data.get('Gender') == 'Female' %}selected{% endif %}>Female</option>
+                            </select>
+                        </div>
+
+                        <!-- Married -->
+                        <div class="form-group">
+                            <label class="form-label" for="Married">Marital Status</label>
+                            <select class="form-control" id="Married" name="Married" required>
+                                <option value="Yes" {% if form_data.get('Married') == 'Yes' or not form_data.get('Married') %}selected{% endif %}>Married</option>
+                                <option value="No" {% if form_data.get('Married') == 'No' %}selected{% endif %}>Single / Unmarried</option>
+                            </select>
+                        </div>
+
+                        <!-- Dependents -->
+                        <div class="form-group">
+                            <label class="form-label" for="Dependents">Number of Dependents</label>
+                            <select class="form-control" id="Dependents" name="Dependents" required>
+                                <option value="0" {% if form_data.get('Dependents') == '0' %}selected{% endif %}>0 Dependents</option>
+                                <option value="1" {% if form_data.get('Dependents') == '1' %}selected{% endif %}>1 Dependent</option>
+                                <option value="2" {% if form_data.get('Dependents') == '2' %}selected{% endif %}>2 Dependents</option>
+                                <option value="3+" {% if form_data.get('Dependents') == '3+' %}selected{% endif %}>3+ Dependents</option>
+                            </select>
+                        </div>
+
+                        <!-- Education -->
+                        <div class="form-group">
+                            <label class="form-label" for="Education">Education Level</label>
+                            <select class="form-control" id="Education" name="Education" required>
+                                <option value="Graduate" {% if form_data.get('Education') == 'Graduate' or not form_data.get('Education') %}selected{% endif %}>Graduate</option>
+                                <option value="Not Graduate" {% if form_data.get('Education') == 'Not Graduate' %}selected{% endif %}>Not Graduate</option>
+                            </select>
+                        </div>
+
+                        <!-- Self Employed -->
+                        <div class="form-group">
+                            <label class="form-label" for="Self_Employed">Employment Status</label>
+                            <select class="form-control" id="Self_Employed" name="Self_Employed" required>
+                                <option value="No" {% if form_data.get('Self_Employed') == 'No' or not form_data.get('Self_Employed') %}selected{% endif %}>Salaried / Employed</option>
+                                <option value="Yes" {% if form_data.get('Self_Employed') == 'Yes' %}selected{% endif %}>Self-Employed / Business</option>
+                            </select>
+                        </div>
+
+                        <!-- Property Area -->
+                        <div class="form-group">
+                            <label class="form-label" for="Property_Area">Property Location Area</label>
+                            <select class="form-control" id="Property_Area" name="Property_Area" required>
+                                <option value="Urban" {% if form_data.get('Property_Area') == 'Urban' or not form_data.get('Property_Area') %}selected{% endif %}>Urban (Metropolitan)</option>
+                                <option value="Semiurban" {% if form_data.get('Property_Area') == 'Semiurban' %}selected{% endif %}>Semiurban (Suburban)</option>
+                                <option value="Rural" {% if form_data.get('Property_Area') == 'Rural' %}selected{% endif %}>Rural</option>
+                            </select>
+                        </div>
+
+                        <!-- Applicant Income -->
+                        <div class="form-group">
+                            <label class="form-label" for="ApplicantIncome">
+                                Applicant Income ($)
+                                <span class="badge-hint">Monthly</span>
+                            </label>
+                            <input type="number" class="form-control" id="ApplicantIncome" name="ApplicantIncome" min="0" step="50" value="{{ form_data.get('ApplicantIncome', '5000') }}" required>
+                        </div>
+
+                        <!-- Coapplicant Income -->
+                        <div class="form-group">
+                            <label class="form-label" for="CoapplicantIncome">
+                                Co-Applicant Income ($)
+                                <span class="badge-hint">Monthly</span>
+                            </label>
+                            <input type="number" class="form-control" id="CoapplicantIncome" name="CoapplicantIncome" min="0" step="50" value="{{ form_data.get('CoapplicantIncome', '1500') }}" required>
+                        </div>
+
+                        <!-- Loan Amount (in thousands) -->
+                        <div class="form-group">
+                            <label class="form-label" for="LoanAmount">
+                                Requested Loan Amount ($)
+                                <span class="badge-hint">In Thousands (e.g. 150 = $150k)</span>
+                            </label>
+                            <input type="number" class="form-control" id="LoanAmount" name="LoanAmount" min="10" max="1000" step="5" value="{{ form_data.get('LoanAmount', '150') }}" required>
+                        </div>
+
+                        <!-- Loan Term -->
+                        <div class="form-group">
+                            <label class="form-label" for="Loan_Amount_Term">
+                                Loan Term
+                                <span class="badge-hint">Months</span>
+                            </label>
+                            <select class="form-control" id="Loan_Amount_Term" name="Loan_Amount_Term" required>
+                                <option value="120" {% if form_data.get('Loan_Amount_Term') == '120' %}selected{% endif %}>10 Years (120 Months)</option>
+                                <option value="180" {% if form_data.get('Loan_Amount_Term') == '180' %}selected{% endif %}>15 Years (180 Months)</option>
+                                <option value="240" {% if form_data.get('Loan_Amount_Term') == '240' %}selected{% endif %}>20 Years (240 Months)</option>
+                                <option value="360" {% if form_data.get('Loan_Amount_Term') == '360' or not form_data.get('Loan_Amount_Term') %}selected{% endif %}>30 Years (360 Months)</option>
+                                <option value="480" {% if form_data.get('Loan_Amount_Term') == '480' %}selected{% endif %}>40 Years (480 Months)</option>
+                            </select>
+                        </div>
+
+                        <!-- Credit History (Crucial attribute) -->
+                        <div class="form-group full-width">
+                            <label class="form-label" for="Credit_History">
+                                Credit History Status
+                                <span class="badge-hint">Core Underwriting Risk Driver</span>
+                            </label>
+                            <select class="form-control" id="Credit_History" name="Credit_History" required>
+                                <option value="1.0" {% if form_data.get('Credit_History') == '1.0' or not form_data.get('Credit_History') %}selected{% endif %}>
+                                    🟢 Good Credit History (1.0) — Meets guidelines, clean repayment record
+                                </option>
+                                <option value="0.0" {% if form_data.get('Credit_History') == '0.0' %}selected{% endif %}>
+                                    🔴 Poor / Default History (0.0) — Delinquencies, prior defaults, or no score
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Live Real-Time Financial Bar -->
+                    <div style="margin: 24px 0; padding: 14px 18px; background: rgba(255,255,255,0.03); border: 1px dashed var(--glass-border); border-radius: var(--radius-sm); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Total Household Income</div>
+                            <div id="calc-total-income" style="font-size: 1.1rem; font-weight: 700; color: #60a5fa;">$6,500</div>
+                        </div>
+                        <div style="width: 1px; height: 30px; background: var(--glass-border);"></div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Estimated Monthly EMI</div>
+                            <div id="calc-emi" style="font-size: 1.1rem; font-weight: 700; color: #f8fafc;">$417/mo</div>
+                        </div>
+                        <div style="width: 1px; height: 30px; background: var(--glass-border);"></div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Debt-to-Income (DTI)</div>
+                            <div id="calc-dti" style="font-size: 1.1rem; font-weight: 700; color: #10b981;">6.4%</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 14px; margin-top: 10px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Loan Approval
+                        </button>
+                        <a href="/predict" class="btn btn-secondary">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Adjudication Result Card -->
+            <div class="result-container">
+                {% if result %}
+                <div class="result-card {% if result.is_approved %}approved{% else %}rejected{% endif %}">
+                    <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 12px;">
+                        Automated Underwriting Determination
+                    </div>
+
+                    {% if result.is_approved %}
+                    <div class="status-badge approved">
+                        <i class="fa-solid fa-circle-check"></i> LOAN APPROVED
+                    </div>
+                    {% else %}
+                    <div class="status-badge rejected">
+                        <i class="fa-solid fa-circle-xmark"></i> LOAN NOT APPROVED
+                    </div>
+                    {% endif %}
+
+                    <!-- Confidence Metric -->
+                    <div class="confidence-meter">
+                        <div class="meter-header">
+                            <span style="color: var(--text-muted);">Model Confidence Score</span>
+                            <span style="font-size: 1.1rem; color: {% if result.is_approved %}#10b981{% else %}#ef4444{% endif %};">{{ result.confidence }}%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill {% if result.is_approved %}approved{% else %}rejected{% endif %}" style="width: {{ result.confidence }}%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Rating Badge -->
+                    <div style="margin: 16px 0; display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: var(--radius-full); background: rgba(255,255,255,0.05); font-size: 0.85rem;">
+                        <span style="color: var(--text-dim);">Financial Risk Tier:</span>
+                        <strong style="color: {% if result.risk_color == 'success' %}#10b981{% elif result.risk_color == 'warning' %}#f59e0b{% else %}#ef4444{% endif %};">
+                            {{ result.risk_level }}
+                        </strong>
+                    </div>
+
+                    <!-- Financial Breakdown Table -->
+                    <div class="financial-metrics-table">
+                        <div class="metric-tile">
+                            <div class="metric-tile-label">Monthly EMI</div>
+                            <div class="metric-tile-val">${{ "{:,.0f}".format(result.monthly_emi) }}</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="metric-tile-label">Total Income</div>
+                            <div class="metric-tile-val">${{ "{:,.0f}".format(result.total_income) }}</div>
+                        </div>
+                        <div class="metric-tile">
+                            <div class="metric-tile-label">DTI Ratio</div>
+                            <div class="metric-tile-val">{{ result.dti_ratio }}%</div>
+                        </div>
+                    </div>
+
+                    <!-- Explainability Factors -->
+                    <div class="factors-list">
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px;">
+                            Key Decision Drivers:
+                        </div>
+                        {% for factor in result.factors %}
+                        <div class="factor-item">
+                            <span class="factor-tag {{ factor.impact }}">{{ factor.impact }}</span>
+                            <div class="factor-text">
+                                <strong>{{ factor.factor }}:</strong> {{ factor.detail }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <!-- Initial Placeholder Card -->
+                <div class="card" style="text-align: center; padding: 50px 30px;">
+                    <div style="font-size: 3.5rem; color: rgba(255,255,255,0.1); margin-bottom: 20px;">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Awaiting Submission</h3>
+                    <p style="color: var(--text-muted); font-size: 0.92rem; max-width: 320px; margin: 0 auto 24px;">
+                        Fill in applicant parameters on the left or select a fast-fill preset profile to evaluate loan eligibility and view confidence ratings.
+                    </p>
+                    <div style="padding: 12px; background: rgba(59,130,246,0.06); border: 1px dashed rgba(59,130,246,0.3); border-radius: var(--radius-sm); font-size: 0.82rem; color: #93c5fd;">
+                        <i class="fa-solid fa-lightbulb"></i> Tip: Credit History is weighted at ~43.7% of total feature importance!
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div>AI-Based Loan Approval Prediction & Financial Risk Analysis System</div>
+            <div>
+                <a href="/" style="margin-right: 16px; color: var(--text-muted);">Home</a>
+                <a href="/dashboard" style="color: var(--text-muted);">Analytics</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

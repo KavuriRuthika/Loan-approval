@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Based Loan Approval Prediction & Financial Risk Analysis System</title>
+    <meta name="description" content="Intelligent machine learning loan eligibility decisioning, credit risk scoring, and multi-model financial underwriting analytics.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="nav-brand">
+                <div class="brand-icon"><i class="fa-solid fa-vault"></i></div>
+                <div>
+                    <div class="brand-title">FintechAI Underwriter</div>
+                    <div class="brand-subtitle">Risk Intelligence System</div>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="/predict" class="nav-link"><i class="fa-solid fa-calculator"></i> Loan Simulator</a>
+                <a href="/dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> Analytics & Models</a>
+                <a href="/predict" class="btn btn-primary nav-cta"><i class="fa-solid fa-wand-magic-sparkles"></i> Predict Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-pill">
+                <span class="pulse-dot"></span> Machine Learning Credit Risk Engine v2.4 Active
+            </div>
+            <h1 class="hero-title">AI-Based Loan Approval Prediction &<br>Financial Risk Analysis System</h1>
+            <p class="hero-subtitle">
+                Harness high-performance ensemble classification models to automate credit underwriting, analyze financial debt capacity, and reduce institutional default risks with transparent, explainable AI.
+            </p>
+            <div class="hero-actions">
+                <a href="/predict" class="btn btn-primary">
+                    <i class="fa-solid fa-shield-halved"></i> Run Instant Loan Assessment
+                </a>
+                <a href="/dashboard" class="btn btn-secondary">
+                    <i class="fa-solid fa-chart-pie"></i> Explore Model Benchmark & EDA
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Key Performance Indicators (KPIs) -->
+    <section class="container">
+        <div class="stats-grid">
+            <div class="card">
+                <div class="stat-header">
+                    <span class="stat-label">Model Benchmark</span>
+                    <div class="stat-icon" style="color: #60a5fa;"><i class="fa-solid fa-brain"></i></div>
+                </div>
+                <div class="stat-value">{{ stats.best_model }}</div>
+                <div class="stat-sub">Ensemble Bagging Classifier</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-header">
+                    <span class="stat-label">Peak Test Accuracy</span>
+                    <div class="stat-icon" style="color: #34d399;"><i class="fa-solid fa-bullseye"></i></div>
+                </div>
+                <div class="stat-value">{{ stats.top_accuracy }}</div>
+                <div class="stat-sub">Stratified 80/20 Test Partition</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-header">
+                    <span class="stat-label">Historical Dataset</span>
+                    <div class="stat-icon" style="color: #c084fc;"><i class="fa-solid fa-database"></i></div>
+                </div>
+                <div class="stat-value">{{ stats.total_applicants }}</div>
+                <div class="stat-sub">{{ stats.features_count }} Cleaned & Engineered Attributes</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-header">
+                    <span class="stat-label">Historical Approval</span>
+                    <div class="stat-icon" style="color: #f59e0b;"><i class="fa-solid fa-stamp"></i></div>
+                </div>
+                <div class="stat-value">{{ stats.overall_approval_rate }}</div>
+                <div class="stat-sub">Baseline Portfolio Benchmark</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Underwriting Pipeline Architecture -->
+    <section class="container" style="margin: 50px auto;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 12px;">Enterprise ML Underwriting Pipeline</h2>
+            <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto;">
+                From raw applicant demographics to risk-weighted credit determinations in under 50 milliseconds.
+            </p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="card">
+                <div style="font-size: 2.2rem; color: #3b82f6; margin-bottom: 16px;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">1. Applicant Intake & Validation</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Captures income, co-applicant financial contributions, requested principal, term duration, and property demographic classification.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 2.2rem; color: #10b981; margin-bottom: 16px;"><i class="fa-solid fa-calculator"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">2. Financial Stress Metrics</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Computes Debt-to-Income (DTI), Equated Monthly Installment (EMI), Total Household Liquidity, and disposable residual income.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 2.2rem; color: #8b5cf6; margin-bottom: 16px;"><i class="fa-solid fa-microchip"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">3. Multi-Model Inference</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Passes normalized engineered features through our trained Random Forest ensemble to generate probability distributions.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 2.2rem; color: #f59e0b; margin-bottom: 16px;"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">4. Explainability & Risk Rating</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Outputs transparent confidence percentages, assigns Risk Tiers (Low, Moderate, High), and details primary driving underwriting factors.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="container" style="margin: 40px auto 80px;">
+        <div class="card" style="background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(124,58,237,0.2)); border-color: rgba(59,130,246,0.3); text-align: center; padding: 50px 30px;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 16px;">Ready to Evaluate Loan Applications?</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; font-size: 1.05rem;">
+                Test single applications or experiment with pre-loaded profiles to see instant approval decisions and confidence scores.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                <a href="/predict" class="btn btn-primary"><i class="fa-solid fa-play"></i> Open Interactive Simulator</a>
+                <a href="/dashboard" class="btn btn-secondary"><i class="fa-solid fa-chart-column"></i> View Algorithm Leaderboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div>
+                <strong>AI-Based Loan Approval Prediction & Financial Risk Analysis System</strong>
+                <div style="margin-top: 4px; color: var(--text-dim);">Powered by Python, Scikit-Learn, Random Forest & Flask</div>
+            </div>
+            <div>
+                <a href="/predict" style="margin-right: 16px; color: var(--text-muted);">Predictor</a>
+                <a href="/dashboard" style="margin-right: 16px; color: var(--text-muted);">Analytics</a>
+                <a href="https://github.com" target="_blank" style="color: var(--text-muted);"><i class="fa-brands fa-github"></i> Repository</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

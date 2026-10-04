@@ -37,23 +37,49 @@
             </p>
         </div>
 
-        <!-- 1-Click Preset Profile Selector -->
-        <div class="card" style="padding: 18px 24px; margin-bottom: 28px;">
-            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Fast-Fill Demonstration Profiles:
+        <!-- Simulation & Autofill Controls Toolbar -->
+        <div class="simulation-toolbar">
+            <div class="simulation-toolbar-header">
+                <div class="simulation-title">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #60a5fa;"></i>
+                    <span>Simulation & Autofill Tools:</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <div class="mode-badge" id="formModeBadge">
+                        <i class="fa-solid fa-pen-to-square" style="color: #34d399;"></i> Mode: <strong>Manual Entry Ready</strong>
+                    </div>
+                </div>
             </div>
+
+            <div class="simulation-actions" style="margin-bottom: 12px;">
+                <button type="button" class="btn-tool btn-autofill" id="btnRandomSimulate" title="Autofill form with a realistic applicant profile">
+                    <i class="fa-solid fa-dice"></i> 🎲 Autofill Random Simulation
+                </button>
+                <button type="button" class="btn-tool btn-simulate-run" id="btnSimulateAndPredict" title="Autofill and run model prediction immediately">
+                    <i class="fa-solid fa-bolt"></i> ⚡ Autofill & Run Adjudication
+                </button>
+                <button type="button" class="btn-tool btn-clear" id="btnClearForm" title="Clear inputs to enter custom data manually">
+                    <i class="fa-solid fa-eraser"></i> 🧹 Clear for Manual Entry
+                </button>
+            </div>
+
+            <!-- Quick Presets Selection -->
             <div class="presets-bar">
+                <span class="preset-label">Preset Personas:</span>
                 <button type="button" class="preset-chip" data-preset="prime">
-                    <i class="fa-solid fa-user-check" style="color: #10b981;"></i> Prime Corporate (High Approval)
+                    <i class="fa-solid fa-user-check" style="color: #10b981;"></i> Prime Corporate
                 </button>
                 <button type="button" class="preset-chip" data-preset="risky">
-                    <i class="fa-solid fa-user-xmark" style="color: #ef4444;"></i> Default Risk (High Rejection)
+                    <i class="fa-solid fa-user-xmark" style="color: #ef4444;"></i> Default Risk
                 </button>
                 <button type="button" class="preset-chip" data-preset="entrepreneur">
-                    <i class="fa-solid fa-briefcase" style="color: #8b5cf6;"></i> Self-Employed Entrepreneur
+                    <i class="fa-solid fa-briefcase" style="color: #8b5cf6;"></i> Self-Employed Founder
                 </button>
                 <button type="button" class="preset-chip" data-preset="starter">
-                    <i class="fa-solid fa-house-chimney" style="color: #3b82f6;"></i> First-Time Starter Home
+                    <i class="fa-solid fa-house-chimney" style="color: #3b82f6;"></i> First-Time Homebuyer
+                </button>
+                <button type="button" class="preset-chip" data-preset="borderline">
+                    <i class="fa-solid fa-scale-balanced" style="color: #f59e0b;"></i> Borderline Case
                 </button>
             </div>
         </div>
@@ -66,7 +92,7 @@
                         <h2 style="font-size: 1.35rem; display: flex; align-items: center; gap: 10px;">
                             <i class="fa-solid fa-id-card-clip" style="color: var(--primary);"></i> Applicant Information
                         </h2>
-                        <span style="font-size: 0.8rem; color: var(--text-dim);">* All attributes required</span>
+                        <span style="font-size: 0.8rem; color: var(--text-dim);">Enter manually or use simulation autofill</span>
                     </div>
 
                     <div class="form-grid">
@@ -83,8 +109,8 @@
                         <div class="form-group">
                             <label class="form-label" for="Married">Marital Status</label>
                             <select class="form-control" id="Married" name="Married" required>
-                                <option value="Yes" {% if form_data.get('Married') == 'Yes' or not form_data.get('Married') %}selected{% endif %}>Married</option>
-                                <option value="No" {% if form_data.get('Married') == 'No' %}selected{% endif %}>Single / Unmarried</option>
+                                <option value="Yes" {% if form_data.get('Married') == 'Yes' %}selected{% endif %}>Married</option>
+                                <option value="No" {% if form_data.get('Married') == 'No' or not form_data.get('Married') %}selected{% endif %}>Single / Unmarried</option>
                             </select>
                         </div>
 
@@ -92,7 +118,7 @@
                         <div class="form-group">
                             <label class="form-label" for="Dependents">Number of Dependents</label>
                             <select class="form-control" id="Dependents" name="Dependents" required>
-                                <option value="0" {% if form_data.get('Dependents') == '0' %}selected{% endif %}>0 Dependents</option>
+                                <option value="0" {% if form_data.get('Dependents') == '0' or not form_data.get('Dependents') %}selected{% endif %}>0 Dependents</option>
                                 <option value="1" {% if form_data.get('Dependents') == '1' %}selected{% endif %}>1 Dependent</option>
                                 <option value="2" {% if form_data.get('Dependents') == '2' %}selected{% endif %}>2 Dependents</option>
                                 <option value="3+" {% if form_data.get('Dependents') == '3+' %}selected{% endif %}>3+ Dependents</option>
@@ -133,7 +159,8 @@
                                 Applicant Income ($)
                                 <span class="badge-hint">Monthly</span>
                             </label>
-                            <input type="number" class="form-control" id="ApplicantIncome" name="ApplicantIncome" min="0" step="50" value="{{ form_data.get('ApplicantIncome', '5000') }}" required>
+                            <input type="number" class="form-control" id="ApplicantIncome" name="ApplicantIncome" min="0" step="50" 
+                                   value="{{ form_data.get('ApplicantIncome', '') }}" placeholder="e.g. 5000" required>
                         </div>
 
                         <!-- Coapplicant Income -->
@@ -142,7 +169,8 @@
                                 Co-Applicant Income ($)
                                 <span class="badge-hint">Monthly</span>
                             </label>
-                            <input type="number" class="form-control" id="CoapplicantIncome" name="CoapplicantIncome" min="0" step="50" value="{{ form_data.get('CoapplicantIncome', '1500') }}" required>
+                            <input type="number" class="form-control" id="CoapplicantIncome" name="CoapplicantIncome" min="0" step="50" 
+                                   value="{{ form_data.get('CoapplicantIncome', '') }}" placeholder="e.g. 1500">
                         </div>
 
                         <!-- Loan Amount (in thousands) -->
@@ -151,7 +179,8 @@
                                 Requested Loan Amount ($)
                                 <span class="badge-hint">In Thousands (e.g. 150 = $150k)</span>
                             </label>
-                            <input type="number" class="form-control" id="LoanAmount" name="LoanAmount" min="10" max="1000" step="5" value="{{ form_data.get('LoanAmount', '150') }}" required>
+                            <input type="number" class="form-control" id="LoanAmount" name="LoanAmount" min="10" max="1000" step="5" 
+                                   value="{{ form_data.get('LoanAmount', '') }}" placeholder="e.g. 150" required>
                         </div>
 
                         <!-- Loan Term -->
@@ -190,25 +219,34 @@
                     <div style="margin: 24px 0; padding: 14px 18px; background: rgba(255,255,255,0.03); border: 1px dashed var(--glass-border); border-radius: var(--radius-sm); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
                         <div style="text-align: center;">
                             <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Total Household Income</div>
-                            <div id="calc-total-income" style="font-size: 1.1rem; font-weight: 700; color: #60a5fa;">$6,500</div>
+                            <div id="calc-total-income" style="font-size: 1.1rem; font-weight: 700; color: #60a5fa;">
+                                {% if result %}${{ "{:,.0f}".format(result.total_income) }}{% else %}$0{% endif %}
+                            </div>
                         </div>
                         <div style="width: 1px; height: 30px; background: var(--glass-border);"></div>
                         <div style="text-align: center;">
                             <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Estimated Monthly EMI</div>
-                            <div id="calc-emi" style="font-size: 1.1rem; font-weight: 700; color: #f8fafc;">$417/mo</div>
+                            <div id="calc-emi" style="font-size: 1.1rem; font-weight: 700; color: #f8fafc;">
+                                {% if result %}${{ "{:,.0f}".format(result.monthly_emi) }}/mo{% else %}$0/mo{% endif %}
+                            </div>
                         </div>
                         <div style="width: 1px; height: 30px; background: var(--glass-border);"></div>
                         <div style="text-align: center;">
                             <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Debt-to-Income (DTI)</div>
-                            <div id="calc-dti" style="font-size: 1.1rem; font-weight: 700; color: #10b981;">6.4%</div>
+                            <div id="calc-dti" style="font-size: 1.1rem; font-weight: 700; color: #10b981;">
+                                {% if result %}{{ result.dti_ratio }}%{% else %}0.0%{% endif %}
+                            </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 14px; margin-top: 10px;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                    <div style="display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;">
+                        <button type="submit" class="btn btn-primary" style="flex: 2; min-width: 200px; justify-content: center;">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Loan Approval
                         </button>
-                        <a href="/predict" class="btn btn-secondary">
+                        <button type="button" class="btn btn-secondary" id="btnFormQuickAutofill" style="flex: 1; min-width: 160px; justify-content: center;" title="Autofill a sample applicant">
+                            <i class="fa-solid fa-dice" style="color: #60a5fa;"></i> Autofill Simulation
+                        </button>
+                        <a href="/predict" class="btn btn-secondary" title="Reset form" style="padding: 12px 18px;">
                             <i class="fa-solid fa-rotate-left"></i>
                         </a>
                     </div>

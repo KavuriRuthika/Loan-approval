@@ -52,26 +52,58 @@ mode = st.sidebar.radio("Navigation", ["🔮 Loan Predictor", "📊 Analytics & 
 if mode == "🔮 Loan Predictor":
     st.subheader("Applicant Financial & Demographic Profile")
     
-    # Preset selection in sidebar
-    preset = st.sidebar.selectbox(
-        "⚡ Quick-Fill Preset Profiles",
-        ["Custom", "Prime Tech Borrower (High Approval)", "Risky Credit History (High Rejection)", "Self-Employed Entrepreneur", "First-Time Starter Home"]
-    )
+    # Preset & Simulation Controls
+    if "sim_defaults" not in st.session_state:
+        st.session_state.sim_defaults = {
+            "gender": "Male", "married": "No", "dependents": "0", "education": "Graduate",
+            "self_employed": "No", "app_income": 0, "coapp_income": 0,
+            "loan_amt": 100, "term": 360, "credit": "Good Credit History (1.0)", "property": "Urban"
+        }
+
+    sim_col1, sim_col2, sim_col3 = st.columns([1.2, 1.2, 1])
     
-    defaults = {
-        "gender": "Male", "married": "Yes", "dependents": "0", "education": "Graduate",
-        "self_employed": "No", "app_income": 5000, "coapp_income": 1500,
-        "loan_amt": 150, "term": 360, "credit": "Good Credit History (1.0)", "property": "Urban"
-    }
-    
-    if preset == "Prime Tech Borrower (High Approval)":
-        defaults.update({"gender": "Male", "married": "Yes", "dependents": "1", "education": "Graduate", "app_income": 8500, "coapp_income": 3000, "loan_amt": 180, "credit": "Good Credit History (1.0)", "property": "Urban"})
-    elif preset == "Risky Credit History (High Rejection)":
-        defaults.update({"gender": "Male", "married": "No", "dependents": "2", "education": "Not Graduate", "app_income": 2200, "coapp_income": 0, "loan_amt": 220, "credit": "Poor / Default History (0.0)", "property": "Rural"})
-    elif preset == "Self-Employed Entrepreneur":
-        defaults.update({"gender": "Female", "married": "Yes", "self_employed": "Yes", "app_income": 7500, "coapp_income": 4500, "loan_amt": 250, "term": 240, "credit": "Good Credit History (1.0)", "property": "Semiurban"})
-    elif preset == "First-Time Starter Home":
-        defaults.update({"gender": "Male", "married": "No", "dependents": "0", "app_income": 4200, "coapp_income": 1200, "loan_amt": 95, "term": 180, "credit": "Good Credit History (1.0)", "property": "Semiurban"})
+    with sim_col1:
+        if st.button("🎲 Autofill Random Simulation", use_container_width=True, type="secondary"):
+            pool = [
+                {"gender": "Male", "married": "Yes", "dependents": "1", "education": "Graduate", "self_employed": "No", "app_income": 8500, "coapp_income": 3000, "loan_amt": 180, "term": 360, "credit": "Good Credit History (1.0)", "property": "Urban"},
+                {"gender": "Male", "married": "No", "dependents": "2", "education": "Not Graduate", "self_employed": "No", "app_income": 2200, "coapp_income": 0, "loan_amt": 220, "term": 360, "credit": "Poor / Default History (0.0)", "property": "Rural"},
+                {"gender": "Female", "married": "Yes", "dependents": "0", "education": "Graduate", "self_employed": "Yes", "app_income": 7500, "coapp_income": 4500, "loan_amt": 250, "term": 240, "credit": "Good Credit History (1.0)", "property": "Semiurban"},
+                {"gender": "Male", "married": "No", "dependents": "0", "education": "Graduate", "self_employed": "No", "app_income": 4500, "coapp_income": 1200, "loan_amt": 110, "term": 240, "credit": "Good Credit History (1.0)", "property": "Semiurban"},
+                {"gender": "Female", "married": "Yes", "dependents": "2", "education": "Graduate", "self_employed": "No", "app_income": 9200, "coapp_income": 3800, "loan_amt": 260, "term": 360, "credit": "Good Credit History (1.0)", "property": "Semiurban"}
+            ]
+            import random
+            st.session_state.sim_defaults = random.choice(pool)
+            st.rerun()
+
+    with sim_col2:
+        preset_choice = st.selectbox(
+            "Select Persona",
+            ["Choose Persona...", "Prime Corporate", "Default Risk", "Self-Employed Founder", "First-Time Homebuyer"],
+            label_visibility="collapsed"
+        )
+        if preset_choice == "Prime Corporate":
+            st.session_state.sim_defaults = {"gender": "Male", "married": "Yes", "dependents": "1", "education": "Graduate", "self_employed": "No", "app_income": 8500, "coapp_income": 3000, "loan_amt": 180, "term": 360, "credit": "Good Credit History (1.0)", "property": "Urban"}
+            st.rerun()
+        elif preset_choice == "Default Risk":
+            st.session_state.sim_defaults = {"gender": "Male", "married": "No", "dependents": "2", "education": "Not Graduate", "self_employed": "No", "app_income": 2200, "coapp_income": 0, "loan_amt": 220, "term": 360, "credit": "Poor / Default History (0.0)", "property": "Rural"}
+            st.rerun()
+        elif preset_choice == "Self-Employed Founder":
+            st.session_state.sim_defaults = {"gender": "Female", "married": "Yes", "dependents": "0", "education": "Graduate", "self_employed": "Yes", "app_income": 7500, "coapp_income": 4500, "loan_amt": 250, "term": 240, "credit": "Good Credit History (1.0)", "property": "Semiurban"}
+            st.rerun()
+        elif preset_choice == "First-Time Homebuyer":
+            st.session_state.sim_defaults = {"gender": "Male", "married": "No", "dependents": "0", "education": "Graduate", "self_employed": "No", "app_income": 4500, "coapp_income": 1200, "loan_amt": 110, "term": 240, "credit": "Good Credit History (1.0)", "property": "Semiurban"}
+            st.rerun()
+
+    with sim_col3:
+        if st.button("🧹 Clear for Manual Entry", use_container_width=True):
+            st.session_state.sim_defaults = {
+                "gender": "Male", "married": "No", "dependents": "0", "education": "Graduate",
+                "self_employed": "No", "app_income": 0, "coapp_income": 0,
+                "loan_amt": 0, "term": 360, "credit": "Good Credit History (1.0)", "property": "Urban"
+            }
+            st.rerun()
+
+    defaults = st.session_state.sim_defaults
 
     col1, col2 = st.columns(2)
     
@@ -88,7 +120,7 @@ if mode == "🔮 Loan Predictor":
         st.markdown("#### Financial & Credit History")
         applicant_income = st.number_input("Applicant Income ($/month)", min_value=0, value=int(defaults["app_income"]), step=100)
         coapplicant_income = st.number_input("Co-Applicant Income ($/month)", min_value=0, value=int(defaults["coapp_income"]), step=100)
-        loan_amount = st.number_input("Requested Loan Amount (in $ thousands, e.g. 150 = $150k)", min_value=10, max_value=1000, value=int(defaults["loan_amt"]), step=5)
+        loan_amount = st.number_input("Requested Loan Amount (in $ thousands, e.g. 150 = $150k)", min_value=0, max_value=1000, value=int(defaults["loan_amt"]), step=5)
         loan_term = st.selectbox("Loan Repayment Term (months)", [120, 180, 240, 360, 480], index=[120, 180, 240, 360, 480].index(defaults["term"]))
         credit_history_label = st.selectbox("Credit History", ["Good Credit History (1.0)", "Poor / Default History (0.0)"], index=0 if "1.0" in defaults["credit"] else 1)
         credit_history = 1.0 if "1.0" in credit_history_label else 0.0
